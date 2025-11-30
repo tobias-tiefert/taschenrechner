@@ -98,7 +98,7 @@ h1{
     padding: calc(var(--base-length-s)/10);
     display: flex;
     flex-direction: column;
-    gap: calc(var(--base-length-s)/3.18);
+    gap: calc(var(--base-length-s)/3.8);
     justify-content: start;
     align-content: center;
 }
@@ -146,6 +146,9 @@ h1{
     color: var(--display-dunkel);
     position: absolute;
     z-index: 10;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 }
 #number{
     
@@ -170,6 +173,7 @@ ul#buttons{
     justify-content: center;
 }
 ul#buttons li{
+    cursor: pointer;
     list-style: none;
     background-color: var(--blau-dunkel);
     color: var(--weiss);
@@ -179,17 +183,43 @@ ul#buttons li{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 300;
+    font-weight: 350;
     font-size: calc(var(--base-length-s)/2);
-    line-height: calc(var(--base-length-s)/2);;
+    line-height: calc(var(--base-length-s)/2);
+    text-align: center;
+    background: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.00) 62.12%), var(--blau-dunkel);
+    box-shadow: 0 4px 4px 1px rgba(0, 0, 0, 0.95), 0 2px 1px 0 rgba(157, 157, 193, 0.25) inset;
+    -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+ul#buttons li:active{
+    border: 1px solid var(--schwarz);
+    background: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.00) 62.12%), var(--blau-dunkel);
+    box-shadow: 0 2px 1px 0 rgba(157, 157, 193, 0.25) inset;
 }
 ul#buttons li.btn-white{
     background-color: var(--weiss);
     color: var(--blau-dunkel);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.00) 62.12%), var(--weiss);
+    box-shadow: 0 4px 4px 1px rgba(0, 0, 0, 0.95), 0 2px 1px 0 rgba(255, 255, 255, 0.70) inset;
 }
 ul#buttons li.btn-beige{
     background-color: var(--beige);
     color: var(--blau-dunkel);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.00) 62.12%), var(--beige);
+    box-shadow: 0 4px 4px 1px rgba(0, 0, 0, 0.95), 0 2px 1px 0 rgba(255, 255, 255, 0.50) inset;
+}
+
+ul#buttons li.btn-white:active{
+    border: 1px solid var(--schwarz);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.00) 62.12%), var(--weiss);
+    box-shadow:  0 2px 1px 0 rgba(255, 255, 255, 0.70) inset;
+}
+ul#buttons li.btn-beige:active{
+    color: var(--blau-dunkel);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.00) 62.12%), var(--beige);
+    box-shadow: 0 2px 1px 0 rgba(255, 255, 255, 0.50) inset;
 }
 #color-select{
     background-color: var(--blau-dunkel);
