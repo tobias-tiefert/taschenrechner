@@ -96,6 +96,11 @@ h1{
     border-radius: calc(var(--base-length-s)/2);
     border: 1px solid var(--schwarz);
     padding: calc(var(--base-length-s)/10);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--base-length-s)/3.18);
+    justify-content: start;
+    align-content: center;
 }
 #display-outer{
     border-radius: calc(var(--base-length-s)/2.4);
@@ -156,7 +161,36 @@ h1{
     margin: 0 calc(-1*(var(--base-length-s)/35));
 
 }
-
+ul#buttons{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--base-length-s)/3);
+    justify-content: center;
+}
+ul#buttons li{
+    list-style: none;
+    background-color: var(--blau-dunkel);
+    color: var(--weiss);
+    width: calc(var(--base-length-s)/1.06);
+    height: calc(var(--base-length-s)/1.06);
+    border-radius: calc(var(--base-length-s)/2.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 300;
+    font-size: calc(var(--base-length-s)/2);
+    line-height: calc(var(--base-length-s)/2);;
+}
+ul#buttons li.btn-white{
+    background-color: var(--weiss);
+    color: var(--blau-dunkel);
+}
+ul#buttons li.btn-beige{
+    background-color: var(--beige);
+    color: var(--blau-dunkel);
+}
 #color-select{
     background-color: var(--blau-dunkel);
     box-shadow: 0 24px 34px 0 rgba(0, 0, 0, 0.14),
