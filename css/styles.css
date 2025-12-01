@@ -13,11 +13,13 @@
 /* --- FARBEN ---*/
 :root {
   --orange:         #F35900;
+  --orange-dunkel:  #3D1701;
   --blau-dunkel:    #181819;
   --beige:          #CBBDA0;
+  --beige-dunkel:   #333029;
   --weiss:          #F0EBE7;
   --grau-hell:      #CDCDCD;
-  --grau-dunkel:    #525252;
+  --grau-dunkel:    #343434;
   --schwarz:        #000;
   --display-gruen:  #78E3A1;
   --display-dunkel: #232624;
@@ -25,13 +27,7 @@
   --base-length-s:    8vh;
 }
 
-@media (orientation: portrait) {
-    :root {
-  --base-length:      120vw;
-  --base-length-s:    12vw;
-}
 
-}
 
 
 .inter {
@@ -46,7 +42,7 @@ body{
     font-optical-sizing: auto;
     font-weight: 200;
     font-style: normal;
-    background-color: var(--beige);
+    background-color: var(--beige)--display-dunkel;
     margin: 0;
     padding: 0;
     color: var(--blau-dunkel);
@@ -59,6 +55,7 @@ body{
     justify-content: center;
     align-items: center;    
     padding: 4rem;
+    background-color: var(--beige);
 }
 
 #taschenrechner{
@@ -259,4 +256,28 @@ ul#buttons li.btn-beige:active{
 }
 #color-select ul li#beige{
     background-color: var(--beige);
+}
+@media (orientation: portrait) {
+    :root {
+  --base-length:      90vw;
+  --base-length-s:    9vw;
+}
+.shadow{
+    padding: 1rem;
+    flex-direction: column;
+    gap: 2rem;
+}
+#color-select{
+    position: inherit;
+}
+
+}
+@media only screen and (max-width: 500px){
+    :root {
+  --base-length:      140vw;
+  --base-length-s:    14vw;
+}
+  .shadow{
+    box-shadow: inset 0 0  70px 5px rgba(0,0,0,0.7);
+}
 }
