@@ -258,6 +258,7 @@ ul#buttons li.btn-beige:active{
     align-items: center;
     justify-content: start;
     padding-left: 10px;
+    cursor: pointer;
 }
 
 #color-select ul li.active-color{
@@ -274,6 +275,7 @@ ul#buttons li.btn-beige:active{
     background-color: var(--beige);
 }
 .diode-outer{
+    pointer-events: none;
     width: 14px;
     height: 14px;
     border-radius: 7px;
@@ -284,6 +286,7 @@ ul#buttons li.btn-beige:active{
     background: linear-gradient(180deg,rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 100%);
 }
 .diode-middle{
+    pointer-events: none;
     width: 12px;
     height: 12px;
     border-radius: 6px;
@@ -294,6 +297,7 @@ ul#buttons li.btn-beige:active{
 
 }
 .diode-inner{
+    pointer-events: none;
     width: 10px;
     height: 10px;
     border-radius: 5px;
