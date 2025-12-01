@@ -318,7 +318,7 @@ ul#buttons li.btn-beige:active{
   --base-length-s:    9vw;
 }
 .shadow{
-    padding: 1rem;
+    padding: 2rem 0;
     flex-direction: column;
     gap: 2rem;
 }
@@ -327,12 +327,15 @@ ul#buttons li.btn-beige:active{
 }
 
 }
-@media only screen and (max-width: 500px){
+@media only screen and (max-width: 600px){
     :root {
   --base-length:      140vw;
   --base-length-s:    14vw;
 }
   .shadow{
     box-shadow: inset 0 0  70px 5px rgba(0,0,0,0.7);
+    padding: 2rem 0;
+    flex-direction: column;
+    gap: 2rem;
 }
 }
