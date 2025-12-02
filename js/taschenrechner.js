@@ -115,6 +115,7 @@ let calculation = {
     result:         "",
     currentNumber: "number1",
     separator:      false,
+    calculationBefore: false,
 }
 updateDisplayResult(calculation.number1)
 
@@ -174,6 +175,17 @@ function updateDisplayResult(input){
             screen.innerHTML = input;
         }
     }
+    console.log(calculation.result)
+    calculation ={
+    number1:        input,
+    number2:        "",
+    operator:       "",
+    result:         "",
+    currentNumber: "number1",
+    calculationBefore: true,
+    separator:      false,
+}
+    updateDisplay(calculation[calculation.currentNumber])
 }
 
 numPad.addEventListener("click", processNumPad);
@@ -181,29 +193,37 @@ numPad.addEventListener("click", processNumPad);
 function processNumPad(){
     let target = event.target;
     if(digits.includes(target.id)){
-        console.log("digits")
-        console.log(target.innerHTML)
         updateCurrentNumber(target.innerHTML)
     } else if(numberChanges.includes(target.id)){
         console.log("changes")
     } else if(calcOperators.includes(target.id)){
-        console.log("Operators")
+        runCalcOperators(target.innerHTML)
     } else if (target.id === "equal-sign"){
         console.log("istgleich")
+        if(calculation.number1 != "" &&
+            calculation.number1 != "-" &&
+            calculation.number2 != ""  &&
+            calculation.number2 != "-" &&
+            calculation.operator != ""
+        ){
+            operate();
+        }
     }
 }
 function updateCurrentNumber(inputString){
     if(inputString != "."){
         calculation[calculation.currentNumber] += inputString;
     }
-    if(inputString === "." && calculation.separator === false ){
+    else if(calculation.separator === false ){
         calculation[calculation.currentNumber] += inputString;
         calculation.separator = true;
         if(calculation[calculation.currentNumber].length === 1){
             calculation[calculation.currentNumber] = "0."
         }
     } 
+    
     updateDisplay(calculation[calculation.currentNumber])
+
 }
 
 function updateDisplay(input){
@@ -226,5 +246,55 @@ function updateDisplay(input){
                 screen.innerHTML = splitedInput[1].slice(-1*numberOfDigits);
             }
         }
+    }
+}
+
+function runCalcOperators(input){
+    
+    if(calculation[calculation.currentNumber] === "" && input === "-"){
+        calculation[calculation.currentNumber] = "-";
+        updateDisplay(calculation[calculation.currentNumber])
+    } else {
+        if(calculation.currentNumber === "number1"){
+            calculation.currentNumber = "number2";
+            calculation.operator = input;
+            calculation.separator = false;
+            updateDisplay(calculation[calculation.currentNumber])
+        } else if(calculation.currentNumber === "number2"){
+            if(calculation[calculation.currentNumber] === ""){
+                calculation.operator = input;
+            } else if(calculation[calculation.currentNumber] != "" && calculation[calculation.currentNumber] != "-"){
+                    
+                    console.log("berechnung starten");
+                    console.log(calculation)
+            }
+        /*operate();*/
+        }
+    }
+}
+
+function operate(){
+    switch(calculation.operator){
+        case "+":
+            calculation.result = Number(calculation.number1)  + Number(calculation.number2) ;
+            updateDisplayResult(calculation.result.toString())
+            break;
+        case "-":
+            calculation.result = Number(calculation.number1)  - Number(calculation.number2) ;
+            updateDisplayResult(calculation.result.toString())
+            break;
+        case "×":
+            calculation.result = Number(calculation.number1)  * Number(calculation.number2) ;
+            updateDisplayResult(calculation.result.toString())
+            break;
+        case "÷":
+            if(Number(calculation.number2) === 0){
+                updateDisplayResult("Error")
+            } else{
+                calculation.result = Number(calculation.number1)  / Number(calculation.number2) ;
+                updateDisplayResult(calculation.result.toString())
+            }
+            
+            break;
     }
 }
