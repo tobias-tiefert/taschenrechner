@@ -345,7 +345,8 @@ function runChanges(input){
 
         case "clear":
             if(calculation[calculation.currentNumber]!=""){
-                calculation[calculation.currentNumber] = calculation[calculation.currentNumber].slice(0, calculation[calculation.currentNumber].length -1)   
+                calculation[calculation.currentNumber] = calculation[calculation.currentNumber].slice(0, calculation[calculation.currentNumber].length -1);
+                updateDisplay(calculation[calculation.currentNumber])   
             }
         break;
 
