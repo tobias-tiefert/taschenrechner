@@ -193,13 +193,16 @@ function processNumPad(){
     }
 }
 function updateCurrentNumber(inputString){
-    calculation[calculation.currentNumber] += inputString;
-    if(inputString === "."){
+    if(inputString != "."){
+        calculation[calculation.currentNumber] += inputString;
+    }
+    if(inputString === "." && calculation.separator === false ){
+        calculation[calculation.currentNumber] += inputString;
         calculation.separator = true;
         if(calculation[calculation.currentNumber].length === 1){
             calculation[calculation.currentNumber] = "0."
         }
-    }
+    } 
     updateDisplay(calculation[calculation.currentNumber])
 }
 
@@ -224,5 +227,4 @@ function updateDisplay(input){
             }
         }
     }
-    console.log(calculation[calculation.currentNumber])
 }
