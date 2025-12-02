@@ -187,7 +187,8 @@ function processNumPad(){
     if(digits.includes(target.id)){
         updateCurrentNumber(target.innerHTML)
     } else if(numberChanges.includes(target.id)){
-        console.log("changes")
+        console.log(target.id)
+        runChanges(target.id);
     } else if(calcOperators.includes(target.id)){
         runCalcOperators(target.innerHTML)
     } else if (target.id === "equal-sign"){
@@ -288,5 +289,39 @@ function operate(){
             }
             
             break;
+    }
+}
+
+function runChanges(input){
+    switch(input){
+        case "change-sign":
+            calculation[calculation.currentNumber] = (Number(calculation[calculation.currentNumber])*(-1)).toString();
+            updateDisplay(calculation[calculation.currentNumber])
+        break;
+
+        case "percent":
+            calculation[calculation.currentNumber] = (Number(calculation[calculation.currentNumber])/100).toString();
+            updateDisplay(calculation[calculation.currentNumber])
+        break;
+
+        case "clear-everything":
+            calculation = {
+                number1:        "",
+                number2:        "",
+                operator:       "",
+                result:         "",
+                currentNumber: "number1",
+                separator:      false,
+                calculationBefore: false,
+            };
+            updateDisplay(calculation[calculation.currentNumber])
+        break;
+
+        case "clear":
+            calculation[calculation.currentNumber] = calculation[calculation.currentNumber].slice(0, calculation[calculation.currentNumber].length -1)
+            updateDisplay(calculation[calculation.currentNumber])
+        break;
+
+
     }
 }
