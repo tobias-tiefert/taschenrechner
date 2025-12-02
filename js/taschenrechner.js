@@ -157,11 +157,10 @@ function updateDisplayResult(input){
         }
     } else{
         if(!(input.includes("."))){
-            console.log("hier")
             scientificNotation(input)
         } else{
             let splitedInput    = input.split(".");
-            if(splitedInput[0] > numberOfDigits){
+            if(splitedInput[0].length > numberOfDigits){
                 
                 scientificNotation(splitedInput[0])
             } else{
