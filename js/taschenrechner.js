@@ -140,52 +140,47 @@ function scientificNotation(input){
         let numScientific   = Math.round(input/(10**(input.length-freeDigits)))/(10**(freeDigits-1))   
         let splitedNum      = numScientific.toString().split(".");
 
-        screen.innerHTML    = splitedNum[0]+"<span class='dot'>.</span>"+ splitedNum[1]+ scientificE + input.length
+        screen.innerHTML    = splitedNum[0]+separatorHTML + splitedNum[1]+ scientificE + input.length
     }
     
     
 }
 
 function updateDisplayResult(input){
-    if(input.includes(".")){
-        let splitedInput = input.split(".")
-        if(input.length < numberOfDigits){ 
-            screen.innerHTML = splitedInput[0]+"<span class='dot'>.</span>"+splitedInput[1];
+    // check if digits fit in display
+    if(input.length < numberOfDigits || (input.length <= numberOfDigits && !(input.includes(".")))){
+        if(!calculation.separator){
+            screen.innerHTML    = input;
+        } else{
+            let splitedInput    = input.split(".");
+            screen.innerHTML = splitedInput[0] + separatorHTML + splitedInput[1]
         }
-        else if(splitedInput[0].length > numberOfDigits){
-            scientificNotation(splitedInput[0])
-        } else if (splitedInput[0].length < numberOfDigits) {     
-            
-            let freeDecimalPlaces = numberOfDigits-splitedInput[0].length;
-            if(freeDecimalPlaces === splitedInput[1].length){
-                screen.innerHTML = splitedInput[0]+"<span class='dot'>.</span>"+ splitedInput[1] ;
-            } else{
-                let slicedString = splitedInput[1].slice(0, freeDecimalPlaces+1);
-                let roundedSlicedString = Math.round(slicedString/10);
-                screen.innerHTML = splitedInput[0]+"<span class='dot'>.</span>"+ removeZerosAtEnd(roundedSlicedString.toString()) ;
-            }
-        } else if(splitedInput[0].length === numberOfDigits){ 
-              screen.innerHTML=Math.round(splitedInput[0]+"."+splitedInput[1].slice(0, 1));
-        } 
-        
     } else{
-        if(input.length > numberOfDigits){
+        if(!(input.includes("."))){
+            console.log("hier")
             scientificNotation(input)
         } else{
-            screen.innerHTML = input;
+            let splitedInput    = input.split(".");
+            if(splitedInput[0] > numberOfDigits){
+                
+                scientificNotation(splitedInput[0])
+            } else{
+                let freeDigits = numberOfDigits - splitedInput[0].length;
+                let roundedDecimalPlaces = Math.round(splitedInput[1].slice(0, freeDigits+1)/10);
+                screen.innerHTML = splitedInput[0] + separatorHTML + roundedDecimalPlaces;
+            }
         }
     }
     console.log(calculation.result)
-    calculation ={
+    calculation = {
     number1:        input,
     number2:        "",
     operator:       "",
     result:         "",
     currentNumber: "number1",
-    calculationBefore: true,
     separator:      false,
+    calculationBefore: true,
 }
-    updateDisplay(calculation[calculation.currentNumber])
 }
 
 numPad.addEventListener("click", processNumPad);
