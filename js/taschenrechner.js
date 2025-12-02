@@ -172,15 +172,12 @@ function updateDisplayResult(input){
         }
     }
     console.log(calculation.result)
-    calculation = {
-    number1:        input,
-    number2:        "",
-    operator:       "",
-    result:         "",
-    currentNumber: "number1",
-    separator:      false,
-    calculationBefore: true,
-}
+    calculation.number1             = input;
+    calculation.currentNumber       = "number1"
+    calculation.separator           = false;
+    calculation.calculationBefore   = true;
+    console.log(calculation)
+
 }
 
 numPad.addEventListener("click", processNumPad);
