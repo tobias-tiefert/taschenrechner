@@ -175,8 +175,6 @@ function updateDisplayResult(input){
     calculation.currentNumber       = "number1"
     calculation.separator           = false;
     calculation.calculationBefore   = true;
-    console.log(calculation)
-
 }
 
 numPad.addEventListener("click", processNumPad);
@@ -242,6 +240,9 @@ function updateDisplay(input){
 }
 
 function runCalcOperators(input){
+    if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
+                calculation.number2 = "";
+                }  
     
     if(calculation[calculation.currentNumber] === "" && input === "-"){
         calculation[calculation.currentNumber] = "-";
@@ -294,13 +295,23 @@ function operate(){
 function runChanges(input){
     switch(input){
         case "change-sign":
-            calculation[calculation.currentNumber] = (Number(calculation[calculation.currentNumber])*(-1)).toString();
-            updateDisplay(calculation[calculation.currentNumber])
+            if(calculation[calculation.currentNumber]!=""){
+                if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
+                calculation.number2 = "";
+                }  
+                calculation[calculation.currentNumber] = (Number(calculation[calculation.currentNumber])*(-1)).toString();
+                updateDisplay(calculation[calculation.currentNumber])
+            }
         break;
 
         case "percent":
-            calculation[calculation.currentNumber] = (Number(calculation[calculation.currentNumber])/100).toString();
-            updateDisplay(calculation[calculation.currentNumber])
+            if(calculation[calculation.currentNumber]!=""){
+                if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
+                calculation.number2 = "";
+                }   
+                calculation[calculation.currentNumber] = (Number(calculation[calculation.currentNumber])/100).toString();
+                updateDisplay(calculation[calculation.currentNumber])
+            }    
         break;
 
         case "clear-everything":
@@ -317,8 +328,9 @@ function runChanges(input){
         break;
 
         case "clear":
-            calculation[calculation.currentNumber] = calculation[calculation.currentNumber].slice(0, calculation[calculation.currentNumber].length -1)
-            updateDisplay(calculation[calculation.currentNumber])
+            if(calculation[calculation.currentNumber]!=""){
+                calculation[calculation.currentNumber] = calculation[calculation.currentNumber].slice(0, calculation[calculation.currentNumber].length -1)   
+            }
         break;
 
 
