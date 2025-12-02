@@ -117,7 +117,7 @@ let calculation = {
     separator:      false,
     calculationBefore: false,
 }
-updateDisplayResult(calculation.number1)
+updateDisplay(calculation.number1)
 
 function removeZerosAtEnd(inputString){
     let newString = inputString;
@@ -175,6 +175,12 @@ function updateDisplayResult(input){
     calculation.currentNumber       = "number1"
     calculation.separator           = false;
     calculation.calculationBefore   = true;
+    if(calculation.newOperator){
+    calculation.operator            = calculation.newOperator;   
+
+    }
+          
+    console.log(calculation)
 }
 
 numPad.addEventListener("click", processNumPad);
@@ -201,6 +207,13 @@ function processNumPad(){
     }
 }
 function updateCurrentNumber(inputString){
+    if(calculation.newOperator){
+        calculation.number2="";
+        calculation.operator = calculation.newOperator;
+        calculation.newOperator =  undefined;
+        calculation.currentNumber = "number2"
+        updateDisplay(calculation.number2)
+    }
     if(inputString != "."){
         calculation[calculation.currentNumber] += inputString;
     }
@@ -240,9 +253,13 @@ function updateDisplay(input){
 }
 
 function runCalcOperators(input){
+
     if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
-                calculation.number2 = "";
-                }  
+        calculation.number2 = "";
+        calculation.currentNumber = "number2";
+        updateDisplay(calculation[calculation.currentNumber])
+        console.log(calculation)
+        } 
     
     if(calculation[calculation.currentNumber] === "" && input === "-"){
         calculation[calculation.currentNumber] = "-";
@@ -257,9 +274,8 @@ function runCalcOperators(input){
             if(calculation[calculation.currentNumber] === ""){
                 calculation.operator = input;
             } else if(calculation[calculation.currentNumber] != "" && calculation[calculation.currentNumber] != "-"){
-                    
-                    console.log("berechnung starten");
-                    console.log(calculation)
+                    calculation.newOperator = input;
+                    operate();
             }
         /*operate();*/
         }
