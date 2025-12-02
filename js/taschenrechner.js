@@ -104,7 +104,9 @@ const digits                    = ["digit-1", "digit-2" , "digit-3",
                                     "digit-0", "dot-sign"];
 const numberChanges             =["change-sign", "percent", "clear-everything", "clear"];
 const calcOperators   =["divide-sign", "multiply-sign", "subtract-sign", "add-sign" ]
-const numberOfDigits    = 10;
+let numberOfDigits   = 10;
+const scientificE      =    "*E"
+const separatorHTML     = '<span class="dot">.</span>'
 
 let calculation = {
     number1:        "",
@@ -114,9 +116,7 @@ let calculation = {
     currentNumber: "number1",
     separator:      false,
 }
-console.log(calculation);
-console.log(calculation.currentNumber)
-console.log(calculation[calculation.currentNumber])
+updateDisplayResult(calculation.number1)
 
 function removeZerosAtEnd(inputString){
     let newString = inputString;
@@ -128,14 +128,31 @@ function removeZerosAtEnd(inputString){
     return newString;
 }
 
-function updateDisplay(input){
+
+function scientificNotation(input){
+    if(input.length >= 300){
+        screen.innerHTML    = "to high"
+    } else {
+        let powerDigits     =  (input.length).toString().length;
+        let timesEDigits    = scientificE.length;
+        let freeDigits      = numberOfDigits - (powerDigits+timesEDigits);
+        let numScientific   = Math.round(input/(10**(input.length-freeDigits)))/(10**(freeDigits-1))   
+        let splitedNum      = numScientific.toString().split(".");
+
+        screen.innerHTML    = splitedNum[0]+"<span class='dot'>.</span>"+ splitedNum[1]+ scientificE + input.length
+    }
+    
+    
+}
+
+function updateDisplayResult(input){
     if(input.includes(".")){
         let splitedInput = input.split(".")
         if(input.length < numberOfDigits){ 
             screen.innerHTML = splitedInput[0]+"<span class='dot'>.</span>"+splitedInput[1];
         }
         else if(splitedInput[0].length > numberOfDigits){
-            screen.innerHTML = "to long"
+            scientificNotation(splitedInput[0])
         } else if (splitedInput[0].length < numberOfDigits) {     
             
             let freeDecimalPlaces = numberOfDigits-splitedInput[0].length;
@@ -149,15 +166,16 @@ function updateDisplay(input){
         } else if(splitedInput[0].length === numberOfDigits){ 
               screen.innerHTML=Math.round(splitedInput[0]+"."+splitedInput[1].slice(0, 1));
         } 
+        
     } else{
         if(input.length > numberOfDigits){
-            screen.innerHTML = "to long"
+            scientificNotation(input)
         } else{
             screen.innerHTML = input;
         }
     }
 }
-updateDisplay(calculation.number1)
+
 numPad.addEventListener("click", processNumPad);
 
 function processNumPad(){
@@ -175,27 +193,36 @@ function processNumPad(){
     }
 }
 function updateCurrentNumber(inputString){
-    /*
-    falls noch kein comma im aktuellen string ist
-     und der aktuelle string kürzer als 10 zeichen ist
-     updaten
-     
-     falls ein komma im string ist und der aktuelle string
-     kürzer als 11 zeichen ist
-        falls kein comma gedrückt wurde -> updaten
-     */
-    if (calculation.separator === false && calculation[calculation.currentNumber].length < numberOfDigits ){
-        calculation[calculation.currentNumber] += inputString;
-        updateDisplay(calculation[calculation.currentNumber])
-        if(inputString === "."){
-            calculation.separator = true;
-        }
-    } else if( calculation.separator === true && calculation[calculation.currentNumber].length < numberOfDigits+1 ){
-
-        if(inputString != "."){
-        calculation[calculation.currentNumber] += inputString;
-        updateDisplay(calculation[calculation.currentNumber])
+    calculation[calculation.currentNumber] += inputString;
+    if(inputString === "."){
+        calculation.separator = true;
+        if(calculation[calculation.currentNumber].length === 1){
+            calculation[calculation.currentNumber] = "0."
         }
     }
-    
+    updateDisplay(calculation[calculation.currentNumber])
+}
+
+function updateDisplay(input){
+    if(!calculation.separator){
+        screen.innerHTML    = input.slice(-1*numberOfDigits);
+        } else{
+
+        let splitedInput    = input.split(".");
+        let currentLength   = input.length;         
+        if(currentLength <= numberOfDigits+1){
+            screen.innerHTML = splitedInput[0] + separatorHTML + splitedInput[1]
+        } else {
+            let digitBeforeSeparator = numberOfDigits- splitedInput[1].length;
+          
+            if (digitBeforeSeparator > 0){
+                screen.innerHTML = splitedInput[0].slice(-1*digitBeforeSeparator) + separatorHTML + splitedInput[1];
+            } else if (digitBeforeSeparator === 0){
+                screen.innerHTML = separatorHTML + splitedInput[1].slice(-1*numberOfDigits);
+            } else{
+                screen.innerHTML = splitedInput[1].slice(-1*numberOfDigits);
+            }
+        }
+    }
+    console.log(calculation[calculation.currentNumber])
 }
