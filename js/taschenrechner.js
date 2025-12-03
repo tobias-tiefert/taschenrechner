@@ -122,18 +122,14 @@ let keyboard = {
     innerHTML: "=",
     },
     process(){
-        console.log(event.key)
-        console.log(keyboard[event.key])
         let target = keyboard[event.key];
         if(numPad.digits.includes(target.id)){
             calculation.updateCurrentNumber(target.innerHTML)
         } else if(numPad.numberChanges.includes(target.id)){
-            console.log(target)
             numPad.runChanges(target.id);
         } else if(calculation.calcOperators.includes(target.id)){
             numPad.runCalcOperators(target.innerHTML)
         } else if (target.id === "equal-sign"){
-            console.log("istgleich")
             if(calculation.number1 != "" &&
                 calculation.number1 != "-" &&
                 calculation.number2 != ""  &&
@@ -158,7 +154,6 @@ let numPad    ={
         if(numPad.digits.includes(target.id)){
             calculation.updateCurrentNumber(target.innerHTML)
         } else if(numPad.numberChanges.includes(target.id)){
-            console.log(target.id)
             numPad.runChanges(target.id);
         } else if(calculation.calcOperators.includes(target.id)){
             numPad.runCalcOperators(target.innerHTML)
@@ -174,13 +169,14 @@ let numPad    ={
         }
     },
     runCalcOperators(input){
+        console.log(calculation.operator)
         if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
             calculation.number2 = "";
             calculation.currentNumber = "number2";
-            screen.update(calculation[calculation.currentNumber])
-            console.log(calculation)
+            screen.update(calculation[calculation.currentNumber]);
             } 
-        if(calculation[calculation.currentNumber] === "" && input === "-"){
+        if(calculation.operator === "" && calculation[calculation.currentNumber] === "" && input === "-"){
+            console.log()
             calculation[calculation.currentNumber] = "-";
             screen.update(calculation[calculation.currentNumber])
         } else {
@@ -256,6 +252,7 @@ let screen ={
         let newString = inputString;
         for(let i = inputString.length; i > 0; i-- ){
             if( newString.endsWith("0")){
+                console.log("detected")
                 newString = newString.slice(0,i)
             }
         } 
@@ -275,6 +272,7 @@ let screen ={
         }
     },
     updateResult(input){
+        console.log(calculation.result)
         // check if digits fit in display
         if(input.length < screen.numberOfDigits || (input.length <= screen.numberOfDigits && !(input.includes(".")))){
             if(!calculation.separator){
@@ -292,13 +290,21 @@ let screen ={
                     
                     screen.scientificNotation(splitedInput[0])
                 } else{
-                    let freeDigits = screen.numberOfDigits - splitedInput[0].length;
-                    let roundedDecimalPlaces = Math.round(splitedInput[1].slice(0, freeDigits+1)/10);
-                    screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML + roundedDecimalPlaces;
+                    if (splitedInput[1].includes("e-")){
+                        console.log("erkannt")
+                        console.log(splitedInput[1].indexOf("e"))
+                        console.log(splitedInput[1].slice(splitedInput[1].indexOf("e")));
+
+                        screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML+ splitedInput[1].slice(0,3) + "*"+splitedInput[1].slice(splitedInput[1].indexOf("e"));
+                    } else{
+                        let freeDigits = screen.numberOfDigits - splitedInput[0].length;
+                        let roundedDecimalPlaces = Math.round(splitedInput[1].slice(0, freeDigits+1)/10).toString();
+                        screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML + this.removeZerosAtEnd(roundedDecimalPlaces);
+                    }
+                    
                 }
             }
         }
-        console.log(calculation.result)
         calculation.number1             = input;
         calculation.currentNumber       = "number1"
         calculation.separator           = false;
@@ -308,10 +314,8 @@ let screen ={
 
         }
             
-        console.log(calculation)
     },
     update(input){
-        console.log("Hallo")
         if(!calculation.separator){
             screen.screen.innerHTML    = input.slice(-1*screen.numberOfDigits);
             } else{
@@ -346,6 +350,15 @@ let calculation = {
     calculationBefore:  false,
     calcOperators:      ["divide-sign", "multiply-sign", "subtract-sign", "add-sign" ],
     updateCurrentNumber(inputString){
+        if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
+            calculation.number1             = "";
+            calculation.number2             = "";
+            calculation.currentNumber       = "number1"
+            calculation.separator           = false;
+            calculation.calculationBefore   = false;
+            calculation.newOperator         = ""
+            screen.update(calculation[calculation.currentNumber]);
+            } 
         if(calculation.newOperator){
             calculation.number2="";
             calculation.operator = calculation.newOperator;
