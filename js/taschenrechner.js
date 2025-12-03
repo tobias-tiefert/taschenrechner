@@ -169,14 +169,12 @@ let numPad    ={
         }
     },
     runCalcOperators(input){
-        console.log(calculation.operator)
         if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
             calculation.number2 = "";
             calculation.currentNumber = "number2";
             screen.update(calculation[calculation.currentNumber]);
             } 
         if(calculation.operator === "" && calculation[calculation.currentNumber] === "" && input === "-"){
-            console.log()
             calculation[calculation.currentNumber] = "-";
             screen.update(calculation[calculation.currentNumber])
         } else {
@@ -252,7 +250,6 @@ let screen ={
         let newString = inputString;
         for(let i = inputString.length; i > 0; i-- ){
             if( newString.endsWith("0")){
-                console.log("detected")
                 newString = newString.slice(0,i)
             }
         } 
@@ -272,9 +269,8 @@ let screen ={
         }
     },
     updateResult(input){
-        console.log(calculation.result)
         // check if digits fit in display
-        if(input.length < screen.numberOfDigits || (input.length <= screen.numberOfDigits && !(input.includes(".")))){
+        if(!(input.includes("e-")) && (input.length < screen.numberOfDigits ||  (input.length <= screen.numberOfDigits && !(input.includes("."))))){
             if(!calculation.separator){
                 screen.screen.innerHTML    = input;
             } else{
@@ -291,11 +287,16 @@ let screen ={
                     screen.scientificNotation(splitedInput[0])
                 } else{
                     if (splitedInput[1].includes("e-")){
-                        console.log("erkannt")
-                        console.log(splitedInput[1].indexOf("e"))
-                        console.log(splitedInput[1].slice(splitedInput[1].indexOf("e")));
-
-                        screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML+ splitedInput[1].slice(0,3) + "*"+splitedInput[1].slice(splitedInput[1].indexOf("e"));
+                        if(Number(splitedInput[1].slice(splitedInput[1].indexOf("-")+1)) >= 100){
+                            screen.screen.innerHTML = "To low"
+                        } else{
+                            if(splitedInput[1] != ""){
+                                screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML+ splitedInput[1].slice(0,3) + "*"+splitedInput[1].slice(splitedInput[1].indexOf("e"));
+                            } else{
+                                screen.screen.innerHTML = splitedInput[0] + "*"+splitedInput[1].slice(splitedInput[1].indexOf("e"));
+                            }
+                            
+                        }
                     } else{
                         let freeDigits = screen.numberOfDigits - splitedInput[0].length;
                         let roundedDecimalPlaces = Math.round(splitedInput[1].slice(0, freeDigits+1)/10).toString();
