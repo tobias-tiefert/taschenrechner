@@ -95,8 +95,10 @@ let keyboard = {
     id: "clear",
     innerHTML: "c"
      },
-    "Backspace": "clear",
-     "%":   "percent",
+      "%": {
+        id: "percent",
+        innerHTML: "%"
+        },
      "-": {
     id: "subtract-sign",
     innerHTML: "-",
@@ -122,7 +124,9 @@ let keyboard = {
     innerHTML: "=",
     },
     process(){
+       
         let target = keyboard[event.key];
+         console.log(event.key)
         if(numPad.digits.includes(target.id)){
             calculation.updateCurrentNumber(target.innerHTML)
         } else if(numPad.numberChanges.includes(target.id)){
@@ -293,9 +297,7 @@ let screen ={
                 }
                 else if(!(input.includes("."))){
                     console.log("hier")
-                
-                    screen.scientificNotation(input)
-                    
+                    screen.scientificNotation(input)         
                 } 
             else{
                 
@@ -310,10 +312,8 @@ let screen ={
                         } else{
                             if(splitedInput[1] != ""){
                                 screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML+ splitedInput[1].slice(0,3) +splitedInput[1].slice(splitedInput[1].indexOf("e"));
-
                                 screen.screen.innerHTML = splitedInput[0] +splitedInput[1].slice(splitedInput[1].indexOf("e"));
                             }
-                            
                         }
                     } else{
                         
@@ -321,7 +321,6 @@ let screen ={
                         let roundedDecimalPlaces = Math.round(splitedInput[1].slice(0, freeDigits+1)/10).toString();
                         screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML + this.removeZerosAtEnd(roundedDecimalPlaces);
                     }
-                    
                 }
             } 
         }
@@ -331,22 +330,18 @@ let screen ={
         calculation.calculationBefore   = true;
         if(calculation.newOperator){
         calculation.operator            = calculation.newOperator;   
-
         }
-            
     },
     update(input){
         if(!calculation.separator){
             screen.screen.innerHTML    = input.slice(-1*screen.numberOfDigits);
             } else{
-
             let splitedInput    = input.split(".");
             let currentLength   = input.length;         
             if(currentLength <= screen.numberOfDigits+1){
                 screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML + splitedInput[1]
             } else {
                 let digitBeforeSeparator = screen.numberOfDigits- splitedInput[1].length;
-            
                 if (digitBeforeSeparator > 0){
                     screen.screen.innerHTML = splitedInput[0].slice(-1*digitBeforeSeparator) + screen.separatorHTML + splitedInput[1];
                 } else if (digitBeforeSeparator === 0){
@@ -357,8 +352,6 @@ let screen ={
             }
         }
     }
-
-
 }
 let calculation = {
     number1:            "",
@@ -428,5 +421,4 @@ let calculation = {
 }
 screen.update(calculation.number1)
 numPad.pad.addEventListener("click", numPad.process)
-
 htmlBody.addEventListener("keyup", keyboard.process)
