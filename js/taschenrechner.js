@@ -244,7 +244,7 @@ let numPad    ={
 let screen ={
     screen:             document.querySelector("#number"),
     numberOfDigits:     10,
-    scientificE:        "*E",
+    scientificE:        "e+",
     separatorHTML:      '<span class="dot">.</span>',
     removeZerosAtEnd(inputString){
         let newString = inputString;
@@ -256,55 +256,74 @@ let screen ={
         return newString;
     },
     scientificNotation(input){
-        if(input.length >= 300){
-            screen.screen.innerHTML    = "to high"
-        } else {
+
             let powerDigits     =  (input.length).toString().length;
             let timesEDigits    = screen.scientificE.length;
             let freeDigits      = screen.numberOfDigits - (powerDigits+timesEDigits);
-            let numScientific   = Math.round(input/(10**(input.length-freeDigits)))/(10**(freeDigits-1))   
-            let splitedNum      = numScientific.toString().split(".");
-
-            screen.screen.innerHTML    = splitedNum[0]+screen.separatorHTML + splitedNum[1]+ screen.scientificE + input.length
-        }
+            let numScientific   = Math.round(input/(10**(input.length-freeDigits)))/(10**(freeDigits-1));
+            if(numScientific.toString().includes(".")){
+                let splitedNum      = numScientific.toString().split(".");
+                screen.screen.innerHTML    = splitedNum[0]+screen.separatorHTML + splitedNum[1]+ screen.scientificE + input.length
+            } else{
+                console.log("hier lag der Fehler");
+                console.log(numScientific)
+                screen.screen.innerHTML    = numScientific +
+                 screen.scientificE + input.length
+            }
     },
     updateResult(input){
+        console.log(calculation.result)
         // check if digits fit in display
-        if(!(input.includes("e-")) && (input.length < screen.numberOfDigits ||  (input.length <= screen.numberOfDigits && !(input.includes("."))))){
+        if(input.includes("e") && !input.includes("-")){
+            let splitedInput = input.split("e");
+            let splitedNumber   = input.split("+");
+            this.screen.innerHTML = Math.round(splitedInput[0]*100)/100 + this.scientificE + splitedNumber[1]
+        }
+        else if(!(input.includes("e")) && (input.length < screen.numberOfDigits ||  (input.length <= screen.numberOfDigits && !(input.includes("."))))){
             if(!calculation.separator){
+
                 screen.screen.innerHTML    = input;
             } else{
                 let splitedInput    = input.split(".");
                 screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML + splitedInput[1]
             }
-        } else{
-            if(!(input.includes("."))){
-                screen.scientificNotation(input)
             } else{
+                if(input.includes("e")&& !input.includes(".")){
+                    this.screen.innerHTML = input;
+                }
+                else if(!(input.includes("."))){
+                    console.log("hier")
+                
+                    screen.scientificNotation(input)
+                    
+                } 
+            else{
+                
                 let splitedInput    = input.split(".");
                 if(splitedInput[0].length > screen.numberOfDigits){
                     
                     screen.scientificNotation(splitedInput[0])
                 } else{
                     if (splitedInput[1].includes("e-")){
-                        if(Number(splitedInput[1].slice(splitedInput[1].indexOf("-")+1)) >= 100){
+                        if(Number(splitedInput[1].slice(splitedInput[1].indexOf("-")+1)) >= 300){
                             screen.screen.innerHTML = "To low"
                         } else{
                             if(splitedInput[1] != ""){
-                                screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML+ splitedInput[1].slice(0,3) + "*"+splitedInput[1].slice(splitedInput[1].indexOf("e"));
-                            } else{
-                                screen.screen.innerHTML = splitedInput[0] + "*"+splitedInput[1].slice(splitedInput[1].indexOf("e"));
+                                screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML+ splitedInput[1].slice(0,3) +splitedInput[1].slice(splitedInput[1].indexOf("e"));
+
+                                screen.screen.innerHTML = splitedInput[0] +splitedInput[1].slice(splitedInput[1].indexOf("e"));
                             }
                             
                         }
                     } else{
+                        
                         let freeDigits = screen.numberOfDigits - splitedInput[0].length;
                         let roundedDecimalPlaces = Math.round(splitedInput[1].slice(0, freeDigits+1)/10).toString();
                         screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML + this.removeZerosAtEnd(roundedDecimalPlaces);
                     }
                     
                 }
-            }
+            } 
         }
         calculation.number1             = input;
         calculation.currentNumber       = "number1"
