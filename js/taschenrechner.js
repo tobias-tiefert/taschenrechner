@@ -38,318 +38,362 @@ function changeColor(){
 }
 
 // Calculator
-/*
-object currentCalculation
-    number 1 = ""
-    number2 = ""
-    operator = ""
-    currentNumber = number1
-    displayString = 
-
-wenn numPad geklickt wird
-    Fall 1 -> zahl oder .
-        currentNumber anpassen
-    fall 2  -> operator
-        falls currentNumber == number2
-            berechnung starten
-        ansonsten currentNumber = number 2
-    fall 3 -> =
-        falls number1 und number 2 nicht leer sind
-            berechnung starten
-        ansonsten nichts machen
-    fall 4 -> anpassungen
-        fall   1 - c
-        current number anpassen
-        fall 2 +-
-        current number anpassen
-        fall 3 %
-        current number anpassen
-        fall 4 ce
-        gesamte Rechnung zurücksetzen
-
-currentNumber anpassen
-            falls -> bisher kein Komma UND weniger als 10 zeichen
-                zu current Number hinzufügen
-            ansonsten falls -> enthält schon ein comma
-                falls comma geklickt wurde 
-                    nichts machen
-                ansonsten falls -> weniger als 10 zeichen 
-                    zu current number hinzufügen
-
-updateDisplay
-    currentNumber 
-        aufteilen mit . als trennzeichen
-        in einem array speichern
-        wieder zusammenfügen und <span> einsetzen
-        anzeigen
-
-berechnung starten
-    falls operater + -> addieren
-    ...
-anpassung
-    falls c
-        current number anpassen
-    falls +-
-        current number * -1
-    falls %
-        current number / 10
-        
-*/
-
-const numPad                    = document.querySelector("#buttons");
-const screen                    = document.querySelector("#number")
-const digits                    = ["digit-1", "digit-2" , "digit-3",
-                                    "digit-4", "digit-5", "digit-6",
-                                    "digit-7", "digit-8", "digit-9",
-                                    "digit-0", "dot-sign"];
-const numberChanges             =["change-sign", "percent", "clear-everything", "clear"];
-const calcOperators   =["divide-sign", "multiply-sign", "subtract-sign", "add-sign" ]
-let numberOfDigits   = 10;
-const scientificE      =    "*E"
-const separatorHTML     = '<span class="dot">.</span>'
-
-let calculation = {
-    number1:        "",
-    number2:        "",
-    operator:       "",
-    result:         "",
-    currentNumber: "number1",
-    separator:      false,
-    calculationBefore: false,
-}
-updateDisplay(calculation.number1)
-
-function removeZerosAtEnd(inputString){
-    let newString = inputString;
-    for(let i = inputString.length; i > 0; i-- ){
-        if( newString.endsWith("0")){
-            newString = newString.slice(0,i)
-        }
-    } 
-    return newString;
-}
-
-
-function scientificNotation(input){
-    if(input.length >= 300){
-        screen.innerHTML    = "to high"
-    } else {
-        let powerDigits     =  (input.length).toString().length;
-        let timesEDigits    = scientificE.length;
-        let freeDigits      = numberOfDigits - (powerDigits+timesEDigits);
-        let numScientific   = Math.round(input/(10**(input.length-freeDigits)))/(10**(freeDigits-1))   
-        let splitedNum      = numScientific.toString().split(".");
-
-        screen.innerHTML    = splitedNum[0]+separatorHTML + splitedNum[1]+ scientificE + input.length
-    }
-    
-    
-}
-
-function updateDisplayResult(input){
-    // check if digits fit in display
-    if(input.length < numberOfDigits || (input.length <= numberOfDigits && !(input.includes(".")))){
-        if(!calculation.separator){
-            screen.innerHTML    = input;
-        } else{
-            let splitedInput    = input.split(".");
-            screen.innerHTML = splitedInput[0] + separatorHTML + splitedInput[1]
-        }
-    } else{
-        if(!(input.includes("."))){
-            scientificNotation(input)
-        } else{
-            let splitedInput    = input.split(".");
-            if(splitedInput[0].length > numberOfDigits){
-                
-                scientificNotation(splitedInput[0])
-            } else{
-                let freeDigits = numberOfDigits - splitedInput[0].length;
-                let roundedDecimalPlaces = Math.round(splitedInput[1].slice(0, freeDigits+1)/10);
-                screen.innerHTML = splitedInput[0] + separatorHTML + roundedDecimalPlaces;
+let keyboard = {
+     "1": {
+    id: "digit-1",
+    innerHTML: "1",
+    },
+     "2": {
+    id: "digit-2",
+    innerHTML: "2",
+    },
+     "3": {
+    id: "digit-3",
+    innerHTML: "3"
+     },
+     "4": {
+    id: "digit-4",
+    innerHTML: "4"
+     },
+     "5": {
+    id: "digit-5",
+    innerHTML: "5"
+     },
+     "6": {
+    id: "digit-6",
+    innerHTML: "6"
+     },
+     "7": {
+    id: "digit-7",
+    innerHTML: "7"
+     },
+     "8": {
+    id: "digit-8",
+    innerHTML: "8"
+     },
+     "9": {
+    id: "digit-9",
+    innerHTML: "9"
+     },
+     "0": {
+    id: "digit-0",
+    innerHTML: "0"
+     },
+     ".": {
+    id: "dot-sign",
+    innerHTML: "."
+     },
+     ",": {
+    id: "dot-sign",
+    innerHTML: "."
+     },
+     "Clear": {
+    id: "clear-everything",
+    innerHTML: "ce"
+     },
+     "Backspace": {
+    id: "clear",
+    innerHTML: "c"
+     },
+    "Backspace": "clear",
+     "%":   "percent",
+     "-": {
+    id: "subtract-sign",
+    innerHTML: "-",
+    },
+     "+": {
+    id: "add-sign",
+    innerHTML: "+",
+    },
+     "*": {
+    id: "multiply-sign",
+    innerHTML: "×",
+    },
+     "/": {
+    id: "divide-sign",
+    innerHTML: "÷",
+    },
+    "Enter": {
+    id: "equal-sign",
+    innerHTML: "=",
+    },
+    "=": {
+    id: "equal-sign",
+    innerHTML: "=",
+    },
+    process(){
+        console.log(event.key)
+        console.log(keyboard[event.key])
+        let target = keyboard[event.key];
+        if(numPad.digits.includes(target.id)){
+            calculation.updateCurrentNumber(target.innerHTML)
+        } else if(numPad.numberChanges.includes(target.id)){
+            console.log(target)
+            numPad.runChanges(target.id);
+        } else if(calculation.calcOperators.includes(target.id)){
+            numPad.runCalcOperators(target.innerHTML)
+        } else if (target.id === "equal-sign"){
+            console.log("istgleich")
+            if(calculation.number1 != "" &&
+                calculation.number1 != "-" &&
+                calculation.number2 != ""  &&
+                calculation.number2 != "-" &&
+                calculation.operator != ""
+            ){
+                calculation.operate();
             }
         }
-    }
-    console.log(calculation.result)
-    calculation.number1             = input;
-    calculation.currentNumber       = "number1"
-    calculation.separator           = false;
-    calculation.calculationBefore   = true;
-    if(calculation.newOperator){
-    calculation.operator            = calculation.newOperator;   
-
-    }
-          
-    console.log(calculation)
+    },
 }
 
-numPad.addEventListener("click", processNumPad);
-
-function processNumPad(){
-    let target = event.target;
-    if(digits.includes(target.id)){
-        updateCurrentNumber(target.innerHTML)
-    } else if(numberChanges.includes(target.id)){
-        console.log(target.id)
-        runChanges(target.id);
-    } else if(calcOperators.includes(target.id)){
-        runCalcOperators(target.innerHTML)
-    } else if (target.id === "equal-sign"){
-        console.log("istgleich")
-        if(calculation.number1 != "" &&
-            calculation.number1 != "-" &&
-            calculation.number2 != ""  &&
-            calculation.number2 != "-" &&
-            calculation.operator != ""
-        ){
-            operate();
-        }
-    }
-}
-function updateCurrentNumber(inputString){
-    if(calculation.newOperator){
-        calculation.number2="";
-        calculation.operator = calculation.newOperator;
-        calculation.newOperator =  undefined;
-        calculation.currentNumber = "number2"
-        updateDisplay(calculation.number2)
-    }
-    if(inputString != "."){
-        calculation[calculation.currentNumber] += inputString;
-    }
-    else if(calculation.separator === false ){
-        calculation[calculation.currentNumber] += inputString;
-        calculation.separator = true;
-        if(calculation[calculation.currentNumber].length === 1){
-            calculation[calculation.currentNumber] = "0."
-        }
-    } 
-    
-    updateDisplay(calculation[calculation.currentNumber])
-
-}
-
-function updateDisplay(input){
-    if(!calculation.separator){
-        screen.innerHTML    = input.slice(-1*numberOfDigits);
-        } else{
-
-        let splitedInput    = input.split(".");
-        let currentLength   = input.length;         
-        if(currentLength <= numberOfDigits+1){
-            screen.innerHTML = splitedInput[0] + separatorHTML + splitedInput[1]
-        } else {
-            let digitBeforeSeparator = numberOfDigits- splitedInput[1].length;
-          
-            if (digitBeforeSeparator > 0){
-                screen.innerHTML = splitedInput[0].slice(-1*digitBeforeSeparator) + separatorHTML + splitedInput[1];
-            } else if (digitBeforeSeparator === 0){
-                screen.innerHTML = separatorHTML + splitedInput[1].slice(-1*numberOfDigits);
-            } else{
-                screen.innerHTML = splitedInput[1].slice(-1*numberOfDigits);
+let numPad    ={
+    pad:            document.querySelector("#buttons"),
+    digits:         ["digit-1", "digit-2" , "digit-3",
+                    "digit-4", "digit-5", "digit-6",
+                    "digit-7", "digit-8", "digit-9",
+                    "digit-0", "dot-sign"],
+    numberChanges:  ["change-sign", "percent", "clear-everything", "clear"],
+    process(){
+        let target = event.target;
+        if(numPad.digits.includes(target.id)){
+            calculation.updateCurrentNumber(target.innerHTML)
+        } else if(numPad.numberChanges.includes(target.id)){
+            console.log(target.id)
+            numPad.runChanges(target.id);
+        } else if(calculation.calcOperators.includes(target.id)){
+            numPad.runCalcOperators(target.innerHTML)
+        } else if (target.id === "equal-sign"){
+            if(calculation.number1 != "" &&
+                calculation.number1 != "-" &&
+                calculation.number2 != ""  &&
+                calculation.number2 != "-" &&
+                calculation.operator != ""
+            ){
+                calculation.operate();
             }
         }
-    }
-}
-
-function runCalcOperators(input){
-
-    if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
-        calculation.number2 = "";
-        calculation.currentNumber = "number2";
-        updateDisplay(calculation[calculation.currentNumber])
-        console.log(calculation)
-        } 
-    
-    if(calculation[calculation.currentNumber] === "" && input === "-"){
-        calculation[calculation.currentNumber] = "-";
-        updateDisplay(calculation[calculation.currentNumber])
-    } else {
-        if(calculation.currentNumber === "number1"){
+    },
+    runCalcOperators(input){
+        if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
+            calculation.number2 = "";
             calculation.currentNumber = "number2";
-            calculation.operator = input;
-            calculation.separator = false;
-            updateDisplay(calculation[calculation.currentNumber])
-        } else if(calculation.currentNumber === "number2"){
-            if(calculation[calculation.currentNumber] === ""){
+            screen.update(calculation[calculation.currentNumber])
+            console.log(calculation)
+            } 
+        if(calculation[calculation.currentNumber] === "" && input === "-"){
+            calculation[calculation.currentNumber] = "-";
+            screen.update(calculation[calculation.currentNumber])
+        } else {
+            if(calculation.currentNumber === "number1"){
+                calculation.currentNumber = "number2";
                 calculation.operator = input;
-            } else if(calculation[calculation.currentNumber] != "" && calculation[calculation.currentNumber] != "-"){
-                    calculation.newOperator = input;
-                    operate();
+                calculation.separator = false;
+                screen.update(calculation[calculation.currentNumber])
+            } else if(calculation.currentNumber === "number2"){
+                if(calculation[calculation.currentNumber] === ""){
+                    calculation.operator = input;
+                } else if(calculation[calculation.currentNumber] != "" && calculation[calculation.currentNumber] != "-"){
+                        calculation.newOperator = input;
+                        calculation.operate();
+                }
+            /*operate();*/
             }
-        /*operate();*/
+        }
+    },
+    runChanges(input){
+        switch(input){
+            case "change-sign":
+                if(calculation[calculation.currentNumber]!=""){
+                    if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
+                    calculation.number2 = "";
+                    }  
+                    calculation[calculation.currentNumber] = (Number(calculation[calculation.currentNumber])*(-1)).toString();
+                    screen.update(calculation[calculation.currentNumber])
+                }
+            break;
+
+            case "percent":
+                if(calculation[calculation.currentNumber]!=""){
+                    if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
+                    calculation.number2 = "";
+                    }   
+                    calculation[calculation.currentNumber] = (Number(calculation[calculation.currentNumber])/100).toString();
+                    screen.update(calculation[calculation.currentNumber])
+                }    
+            break;
+
+            case "clear-everything":
+                calculation.number1 =        "";
+                calculation.number2 =        "";
+                calculation.operator =     "";
+                calculation.result =         "";
+                calculation.currentNumber = "number1";
+                calculation.separator =      false;
+                calculation.calculationBefore= false;
+                calculation.newOperator = "";
+                
+                screen.update(calculation[calculation.currentNumber])
+            break;
+
+            case "clear":
+                if(calculation[calculation.currentNumber]!=""){
+                    calculation[calculation.currentNumber] = calculation[calculation.currentNumber].slice(0, calculation[calculation.currentNumber].length -1);
+                    screen.update(calculation[calculation.currentNumber])   
+                }
+            break;
+
+
+        }
+    },
+
+}
+let screen ={
+    screen:             document.querySelector("#number"),
+    numberOfDigits:     10,
+    scientificE:        "*E",
+    separatorHTML:      '<span class="dot">.</span>',
+    removeZerosAtEnd(inputString){
+        let newString = inputString;
+        for(let i = inputString.length; i > 0; i-- ){
+            if( newString.endsWith("0")){
+                newString = newString.slice(0,i)
+            }
+        } 
+        return newString;
+    },
+    scientificNotation(input){
+        if(input.length >= 300){
+            screen.screen.innerHTML    = "to high"
+        } else {
+            let powerDigits     =  (input.length).toString().length;
+            let timesEDigits    = screen.scientificE.length;
+            let freeDigits      = screen.numberOfDigits - (powerDigits+timesEDigits);
+            let numScientific   = Math.round(input/(10**(input.length-freeDigits)))/(10**(freeDigits-1))   
+            let splitedNum      = numScientific.toString().split(".");
+
+            screen.screen.innerHTML    = splitedNum[0]+screen.separatorHTML + splitedNum[1]+ screen.scientificE + input.length
+        }
+    },
+    updateResult(input){
+        // check if digits fit in display
+        if(input.length < screen.numberOfDigits || (input.length <= screen.numberOfDigits && !(input.includes(".")))){
+            if(!calculation.separator){
+                screen.screen.innerHTML    = input;
+            } else{
+                let splitedInput    = input.split(".");
+                screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML + splitedInput[1]
+            }
+        } else{
+            if(!(input.includes("."))){
+                screen.scientificNotation(input)
+            } else{
+                let splitedInput    = input.split(".");
+                if(splitedInput[0].length > screen.numberOfDigits){
+                    
+                    screen.scientificNotation(splitedInput[0])
+                } else{
+                    let freeDigits = screen.numberOfDigits - splitedInput[0].length;
+                    let roundedDecimalPlaces = Math.round(splitedInput[1].slice(0, freeDigits+1)/10);
+                    screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML + roundedDecimalPlaces;
+                }
+            }
+        }
+        console.log(calculation.result)
+        calculation.number1             = input;
+        calculation.currentNumber       = "number1"
+        calculation.separator           = false;
+        calculation.calculationBefore   = true;
+        if(calculation.newOperator){
+        calculation.operator            = calculation.newOperator;   
+
+        }
+            
+        console.log(calculation)
+    },
+    update(input){
+        console.log("Hallo")
+        if(!calculation.separator){
+            screen.screen.innerHTML    = input.slice(-1*screen.numberOfDigits);
+            } else{
+
+            let splitedInput    = input.split(".");
+            let currentLength   = input.length;         
+            if(currentLength <= screen.numberOfDigits+1){
+                screen.screen.innerHTML = splitedInput[0] + screen.separatorHTML + splitedInput[1]
+            } else {
+                let digitBeforeSeparator = screen.numberOfDigits- splitedInput[1].length;
+            
+                if (digitBeforeSeparator > 0){
+                    screen.screen.innerHTML = splitedInput[0].slice(-1*digitBeforeSeparator) + screen.separatorHTML + splitedInput[1];
+                } else if (digitBeforeSeparator === 0){
+                    screen.screen.innerHTML = screen.separatorHTML + splitedInput[1].slice(-1*screen.numberOfDigits);
+                } else{
+                    screen.screen.innerHTML = splitedInput[1].slice(-1*screen.numberOfDigits);
+                }
+            }
+        }
+    }
+
+
+}
+let calculation = {
+    number1:            "",
+    number2:            "",
+    operator:           "",
+    result:             "",
+    currentNumber:      "number1",
+    separator:          false,
+    calculationBefore:  false,
+    calcOperators:      ["divide-sign", "multiply-sign", "subtract-sign", "add-sign" ],
+    updateCurrentNumber(inputString){
+        if(calculation.newOperator){
+            calculation.number2="";
+            calculation.operator = calculation.newOperator;
+            calculation.newOperator =  undefined;
+            calculation.currentNumber = "number2"
+            screen.update(calculation.number2)
+        }
+        if(inputString != "."){
+            calculation[calculation.currentNumber] += inputString;
+        }
+        else if(calculation.separator === false ){
+            calculation[calculation.currentNumber] += inputString;
+            calculation.separator = true;
+            if(calculation[calculation.currentNumber].length === 1){
+                calculation[calculation.currentNumber] = "0."
+            }
+        } 
+        
+        screen.update(calculation[calculation.currentNumber])
+
+    },
+    operate(){
+        switch(calculation.operator){
+            case "+":
+                calculation.result = Number(calculation.number1)  + Number(calculation.number2) ;
+                screen.updateResult(calculation.result.toString())
+                break;
+            case "-":
+                calculation.result = Number(calculation.number1)  - Number(calculation.number2) ;
+                screen.updateResult(calculation.result.toString())
+                break;
+            case "×":
+                calculation.result = Number(calculation.number1)  * Number(calculation.number2) ;
+                screen.updateResult(calculation.result.toString())
+                break;
+            case "÷":
+                if(Number(calculation.number2) === 0){
+                    screen.updateResult("Error")
+                } else{
+                    calculation.result = Number(calculation.number1)  / Number(calculation.number2) ;
+                    screen.updateResult(calculation.result.toString())
+                }
+                
+                break;
         }
     }
 }
+screen.update(calculation.number1)
+numPad.pad.addEventListener("click", numPad.process)
 
-function operate(){
-    switch(calculation.operator){
-        case "+":
-            calculation.result = Number(calculation.number1)  + Number(calculation.number2) ;
-            updateDisplayResult(calculation.result.toString())
-            break;
-        case "-":
-            calculation.result = Number(calculation.number1)  - Number(calculation.number2) ;
-            updateDisplayResult(calculation.result.toString())
-            break;
-        case "×":
-            calculation.result = Number(calculation.number1)  * Number(calculation.number2) ;
-            updateDisplayResult(calculation.result.toString())
-            break;
-        case "÷":
-            if(Number(calculation.number2) === 0){
-                updateDisplayResult("Error")
-            } else{
-                calculation.result = Number(calculation.number1)  / Number(calculation.number2) ;
-                updateDisplayResult(calculation.result.toString())
-            }
-            
-            break;
-    }
-}
-
-function runChanges(input){
-    switch(input){
-        case "change-sign":
-            if(calculation[calculation.currentNumber]!=""){
-                if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
-                calculation.number2 = "";
-                }  
-                calculation[calculation.currentNumber] = (Number(calculation[calculation.currentNumber])*(-1)).toString();
-                updateDisplay(calculation[calculation.currentNumber])
-            }
-        break;
-
-        case "percent":
-            if(calculation[calculation.currentNumber]!=""){
-                if(calculation.calculationBefore === true && calculation.currentNumber === "number1" ){
-                calculation.number2 = "";
-                }   
-                calculation[calculation.currentNumber] = (Number(calculation[calculation.currentNumber])/100).toString();
-                updateDisplay(calculation[calculation.currentNumber])
-            }    
-        break;
-
-        case "clear-everything":
-            calculation = {
-                number1:        "",
-                number2:        "",
-                operator:       "",
-                result:         "",
-                currentNumber: "number1",
-                separator:      false,
-                calculationBefore: false,
-            };
-            updateDisplay(calculation[calculation.currentNumber])
-        break;
-
-        case "clear":
-            if(calculation[calculation.currentNumber]!=""){
-                calculation[calculation.currentNumber] = calculation[calculation.currentNumber].slice(0, calculation[calculation.currentNumber].length -1);
-                updateDisplay(calculation[calculation.currentNumber])   
-            }
-        break;
-
-
-    }
-}
+htmlBody.addEventListener("keyup", keyboard.process)
