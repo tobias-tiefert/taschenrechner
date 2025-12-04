@@ -126,23 +126,27 @@ let keyboard = {
     process(){
        
         let target = keyboard[event.key];
-         console.log(event.key)
-        if(numPad.digits.includes(target.id)){
+        if( keyboard[event.key] != undefined){
+            if(numPad.digits.includes(target.id)){
             calculation.updateCurrentNumber(target.innerHTML)
-        } else if(numPad.numberChanges.includes(target.id)){
-            numPad.runChanges(target.id);
-        } else if(calculation.calcOperators.includes(target.id)){
-            numPad.runCalcOperators(target.innerHTML)
-        } else if (target.id === "equal-sign"){
-            if(calculation.number1 != "" &&
-                calculation.number1 != "-" &&
-                calculation.number2 != ""  &&
-                calculation.number2 != "-" &&
-                calculation.operator != ""
-            ){
-                calculation.operate();
+            } else if(numPad.numberChanges.includes(target.id)){
+                numPad.runChanges(target.id);
+            } else if(calculation.calcOperators.includes(target.id)){
+                numPad.runCalcOperators(target.innerHTML)
+            } else if (target.id === "equal-sign"){
+                if(calculation.number1 != "" &&
+                    calculation.number1 != "-" &&
+                    calculation.number2 != ""  &&
+                    calculation.number2 != "-" &&
+                    calculation.operator != ""
+                ){
+                    calculation.operate();
+                }
             }
         }
+
+
+        
     },
 }
 
