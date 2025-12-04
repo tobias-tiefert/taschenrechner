@@ -273,8 +273,6 @@ let screen ={
                 let splitedNum      = numScientific.toString().split(".");
                 screen.screen.innerHTML    = splitedNum[0]+screen.separatorHTML + splitedNum[1]+ screen.scientificE + input.length
             } else{
-                console.log("hier lag der Fehler");
-                console.log(numScientific)
                 screen.screen.innerHTML    = numScientific +
                  screen.scientificE + input.length
             }
