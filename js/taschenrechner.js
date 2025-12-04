@@ -278,7 +278,6 @@ let screen ={
             }
     },
     updateResult(input){
-        console.log(calculation.result)
         // check if digits fit in display
         if(input.includes("e") && !input.includes("-")){
             let splitedInput = input.split("e");
@@ -298,7 +297,6 @@ let screen ={
                     this.screen.innerHTML = input;
                 }
                 else if(!(input.includes("."))){
-                    console.log("hier")
                     screen.scientificNotation(input)         
                 } 
             else{
