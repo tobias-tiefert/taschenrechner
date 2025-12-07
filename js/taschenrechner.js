@@ -422,3 +422,12 @@ let calculation = {
 screen.update(calculation.number1)
 numPad.pad.addEventListener("click", numPad.process)
 htmlBody.addEventListener("keyup", keyboard.process)
+
+// Prevent zooming on double tap
+
+// Prevent zooming with more than one finger
+document.addEventListener('touchstart', function(e) {
+    if (e.touches.length > 1) {
+        e.preventDefault(); // Prevent zoom
+    }
+}, { passive: false });
